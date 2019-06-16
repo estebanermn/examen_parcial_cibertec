@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
     TextInputEditText etCompany;
     TextView tvTitle, tvDescription, tvCompany;
     ImageView ivLogo;
-
-    ArrayList<Job> items;
+    JobAdapter jobAdapter;
+    List<Job> items;
     RecyclerView rvJobs;
 
     @Override
@@ -46,39 +47,38 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                String job = etCompany.getText().toString();
 
-                Retrofit retrofit = new Retrofit.Builder().baseUrl("https://jobs.github.com")
+
+                Retrofit retrofit = new Retrofit.Builder().baseUrl("https://jobs.github.com/")
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
                 JobInterface jobInterface = retrofit.create(JobInterface.class);
 
 
+                Call<List<Job>> methodSearch = jobInterface.searchJob( etCompany.getText().toString());
 
-                Call<ArrayList<Job>> methodSearch = jobInterface.searchJob(job);
-
-                methodSearch.enqueue(new Callback<ArrayList<Job>>() {
+                methodSearch.enqueue(new Callback<List<Job>>() {
                     @Override
-                    public void onResponse(Call<ArrayList<Job>> call, Response<ArrayList<Job>> response) {
+                    public void onResponse(Call<List<Job>> call, Response<List<Job>> response) {
 
 
+                        if (response.isSuccessful()) {
+                            items = response.body();
+                            jobAdapter = new JobAdapter(items);
+                            rvJobs.setAdapter(jobAdapter);
+                            rvJobs.setLayoutManager
+                                    (new LinearLayoutManager(MainActivity.this));
 
-                            if (response.isSuccessful()) {
-                                ArrayList<Job> job = response.body();
-                                items.addAll(job);
-                                JobAdapter  jobAdapter = new JobAdapter(items);
-                                rvJobs.setAdapter(jobAdapter);
-                                rvJobs.setLayoutManager
-                                            (new LinearLayoutManager(MainActivity.this));
-
-                            }
+                        }
                     }
 
                     @Override
-                    public void onFailure(Call<ArrayList<Job>> call, Throwable t) {
+                    public void onFailure(Call<List<Job>> call, Throwable t) {
                         Log.d("Error", t.toString());
                     }
+
+
                 });
 
             }

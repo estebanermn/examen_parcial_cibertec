@@ -10,5 +10,5 @@ import retrofit2.http.Query;
 public interface JobInterface {
 
     @GET("/positions.json?")
-    Call<ArrayList<Job>> searchJob(@Query("description") String job);
+    Call<List<Job>> searchJob(@Query("description") String job);
 }

@@ -10,17 +10,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class JobAdapter extends RecyclerView.Adapter<JobAdapter.LayoutJob> {
 
-static final String url_logo = "https://jobs.github.com/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBaWRoIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--60b93fbdfaefa103c133026d0c07507614c1033f/Kingdotcom.png";
-    ArrayList<Job> jobs;
+    static final String url_logo = "https://jobs.github.com/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBaWRoIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--60b93fbdfaefa103c133026d0c07507614c1033f/Kingdotcom.png";
+    List<Job> items;
 
-    public JobAdapter(ArrayList<Job> jobs) {
-        this.jobs = jobs;
+    public JobAdapter(List<Job> items) {
+        this.items = items;
     }
-
 
     @NonNull
     @Override
@@ -35,22 +34,21 @@ static final String url_logo = "https://jobs.github.com/rails/active_storage/blo
 
     @Override
     public void onBindViewHolder(@NonNull LayoutJob layoutJob, int position) {
-        layoutJob.tvTitle.setText(jobs.get(position).getTitle());
+        layoutJob.tvTitle.setText(items.get(position).getTitle());
 
-        layoutJob.tvCompany.setText(jobs.get(position).getCompany());
+        layoutJob.tvCompany.setText(items.get(position).getCompany());
 
-        layoutJob.tvDescription.setText(jobs.get(position).getDescription());
+        layoutJob.tvDescription.setText(items.get(position).getDescription());
 
 
         Glide.with(layoutJob.itemView).load(url_logo).into(layoutJob.ivLogo);
-             //   + jobs.get(position).getCompany_logo()).into(layoutJob.ivLogo);
+        //   + jobs.get(position).getCompany_logo()).into(layoutJob.ivLogo);
     }
-
 
 
     @Override
     public int getItemCount() {
-        return jobs.size();
+        return items.size();
     }
 
     public class LayoutJob extends RecyclerView.ViewHolder {
