@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +22,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
+
     Button btSearch;
-    TextInputEditText etCompany;
-    TextView tvTitle, tvDescription, tvCompany;
-    ImageView ivLogo;
-    JobAdapter jobAdapter;
+    TextInputEditText etJob;
+    JobAdapter adapter;
     List<Job> items;
     RecyclerView rvJobs;
 
@@ -35,47 +35,54 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        etCompany = findViewById(R.id.etCompany);
+        etJob = findViewById(R.id.etJob);
         btSearch = findViewById(R.id.btnSearch);
-        tvTitle = findViewById(R.id.tvTitle);
-        tvDescription = findViewById(R.id.tvDescription);
-        tvCompany = findViewById(R.id.tvCompany);
-        ivLogo = findViewById(R.id.imageView);
+        rvJobs = findViewById(R.id.rvJob);
+
 
         btSearch.setOnClickListener(new View.OnClickListener() {
 
 
             @Override
             public void onClick(View v) {
+                String url = "https://jobs.github.com/";
 
 
-                Retrofit retrofit = new Retrofit.Builder().baseUrl("https://jobs.github.com/")
+                Retrofit retrofit = new Retrofit.Builder().baseUrl(url)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
+
                 JobInterface jobInterface = retrofit.create(JobInterface.class);
 
-
-                Call<List<Job>> methodSearch = jobInterface.searchJob( etCompany.getText().toString());
-
-                methodSearch.enqueue(new Callback<List<Job>>() {
+                Call<List<Job>> searchMethod = jobInterface.searchJobs(etJob.getText().toString());
+                searchMethod.enqueue(new Callback<List<Job>>() {
                     @Override
                     public void onResponse(Call<List<Job>> call, Response<List<Job>> response) {
 
-
                         if (response.isSuccessful()) {
-                            items = response.body();
-                            jobAdapter = new JobAdapter(items);
-                            rvJobs.setAdapter(jobAdapter);
-                            rvJobs.setLayoutManager
-                                    (new LinearLayoutManager(MainActivity.this));
 
+                            items = response.body();
+                            adapter = new JobAdapter(items);
+
+                            rvJobs.setAdapter(adapter);
+                            rvJobs.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                            adapter.notifyDataSetChanged();
+                            Log.d("TAg", "Success");
+                        } else {
+                            Toast.makeText(MainActivity.this, "Server returned an error", Toast.LENGTH_SHORT).show();
+                            System.out.println("error" + adapter);
                         }
                     }
+
 
                     @Override
                     public void onFailure(Call<List<Job>> call, Throwable t) {
                         Log.d("Error", t.toString());
+                        //t.printStackTrace();
+                        Toast.makeText(MainActivity.this, "network failure :( inform the user and possibly retry", Toast.LENGTH_SHORT).show();
+                        System.out.println(" :::: adapter " + adapter);
+                        System.out.println(":::: items " +items);
                     }
 
 

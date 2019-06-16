@@ -5,18 +5,17 @@ import com.google.gson.annotations.SerializedName;
 public class Job {
 
 
-
     @SerializedName("title")
-    public String title;
+    private String title;
 
     @SerializedName("company")
-    public String company;
+    private String company;
 
-    @SerializedName("description")
     public String description;
 
     @SerializedName("company_logo")
     public String company_logo;
+
 
     public String getTitle() {
         return title;
