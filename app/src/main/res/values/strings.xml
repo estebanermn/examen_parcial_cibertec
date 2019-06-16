@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GitJobs</string>
+    <string name="hint_job">Job</string>
+    <string name="bt_search">Buscar</string>
+    <string name="nombre" />
+    <string name="tv_title">title</string>
+
+</resources>
